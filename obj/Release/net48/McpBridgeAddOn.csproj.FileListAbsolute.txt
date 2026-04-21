@@ -1,0 +1,10 @@
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\obj\Release\net48\McpBridgeAddOn.csproj.AssemblyReference.cache
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\obj\Release\net48\McpBridgeAddOn.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\obj\Release\net48\McpBridgeAddOn.AssemblyInfoInputs.cache
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\obj\Release\net48\McpBridgeAddOn.AssemblyInfo.cs
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\obj\Release\net48\McpBridgeAddOn.csproj.CoreCompileInputs.cache
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\obj\Release\net48\McpBridgeAddOn.sourcelink.json
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\bin\Release\net48\McpBridgeAddOn.dll
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\bin\Release\net48\McpBridgeAddOn.pdb
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\obj\Release\net48\McpBridgeAddOn.dll
+C:\Users\oscar\Documents\LLMWIKI\Github\ninjatrader-mcp\obj\Release\net48\McpBridgeAddOn.pdb

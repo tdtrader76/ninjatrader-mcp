@@ -16,12 +16,13 @@ class NinjaTraderAPI {
         this.accountId = null;
         this.ws = null;
         this.messageHandlers = new Map();
-        
+
         // Configuration from environment
         this.localUrl = process.env.NINJATRADER_LOCAL_URL || 'http://localhost:7890';
         this.apiKey = process.env.NINJATRADER_API_KEY;
+        this.apiToken = process.env.NINJATRADER_API_TOKEN || '1976060810082016';
         this.ecosystemUrl = 'https://api.ninjatrader.com';
-        
+
         // Connection mode: 'local' (desktop) or 'cloud' (ecosystem)
         this.mode = process.env.NINJATRADER_MODE || 'local';
     }
@@ -34,7 +35,8 @@ class NinjaTraderAPI {
                 method,
                 url: `${this.localUrl}${endpoint}`,
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-NTMCP-Token': this.apiToken
                 },
                 timeout: 10000
             };
@@ -99,7 +101,7 @@ class NinjaTraderAPI {
     
     async getAccounts() {
         if (this.mode === 'local') {
-            return await this.localRequest('GET', '/api/accounts');
+            return await this.localRequest('GET', '/accounts');
         }
         return await this.cloudRequest('GET', '/v1/accounts');
     }
@@ -107,7 +109,7 @@ class NinjaTraderAPI {
     async getAccountInfo(accountId = null) {
         const id = accountId || this.accountId;
         if (this.mode === 'local') {
-            return await this.localRequest('GET', `/api/account${id ? `/${id}` : ''}`);
+            return await this.localRequest('GET', `/accounts${id ? `/${id}` : ''}`);
         }
         return await this.cloudRequest('GET', `/v1/accounts/${id}`);
     }
@@ -115,7 +117,7 @@ class NinjaTraderAPI {
     async getAccountBalance(accountId = null) {
         const id = accountId || this.accountId;
         if (this.mode === 'local') {
-            return await this.localRequest('GET', `/api/account/${id}/balance`);
+            return await this.localRequest('GET', `/accounts/${id}/balance`);
         }
         return await this.cloudRequest('GET', `/v1/accounts/${id}/balance`);
     }
@@ -125,16 +127,14 @@ class NinjaTraderAPI {
     async getPositions(accountId = null) {
         const id = accountId || this.accountId;
         if (this.mode === 'local') {
-            return await this.localRequest('GET', `/api/positions${id ? `?accountId=${id}` : ''}`);
+            return await this.localRequest('GET', '/positions');
         }
         return await this.cloudRequest('GET', `/v1/accounts/${id}/positions`);
     }
 
     async getPosition(accountId, instrument = null) {
         if (this.mode === 'local') {
-            let url = `/api/position?accountId=${accountId}`;
-            if (instrument) url += `&instrument=${instrument}`;
-            return await this.localRequest('GET', url);
+            return await this.localRequest('GET', '/positions');
         }
         return await this.cloudRequest('GET', `/v1/accounts/${accountId}/positions?instrument=${instrument}`);
     }
@@ -142,12 +142,12 @@ class NinjaTraderAPI {
     // ============ ORDER METHODS ============
     
     async getOrders(accountId = null, status = null) {
-        let endpoint = this.mode === 'local' ? '/api/orders' : '/v1/orders';
+        let endpoint = this.mode === 'local' ? '/orders' : '/v1/orders';
         const params = [];
         if (accountId) params.push(`accountId=${accountId}`);
         if (status) params.push(`status=${status}`);
         if (params.length) endpoint += `?${params.join('&')}`;
-        
+
         if (this.mode === 'local') {
             return await this.localRequest('GET', endpoint);
         }
@@ -167,7 +167,7 @@ class NinjaTraderAPI {
         if (stopPrice) orderData.stopPrice = stopPrice;
 
         if (this.mode === 'local') {
-            return await this.localRequest('POST', '/api/order/place', orderData);
+            return await this.localRequest('POST', '/order', orderData);
         }
         return await this.cloudRequest('POST', '/v1/orders', orderData);
     }
@@ -179,14 +179,14 @@ class NinjaTraderAPI {
         if (stopPrice) data.stopPrice = stopPrice;
 
         if (this.mode === 'local') {
-            return await this.localRequest('POST', '/api/order/modify', data);
+            return await this.localRequest('POST', '/order/modify', data);
         }
         return await this.cloudRequest('PUT', '/v1/orders', data);
     }
 
     async cancelOrder(orderId) {
         if (this.mode === 'local') {
-            return await this.localRequest('POST', '/api/order/cancel', { orderId });
+            return await this.localRequest('POST', '/order/cancel', { orderId });
         }
         return await this.cloudRequest('DELETE', `/v1/orders/${orderId}`);
     }
@@ -196,7 +196,7 @@ class NinjaTraderAPI {
         if (accountId) data.accountId = accountId;
 
         if (this.mode === 'local') {
-            return await this.localRequest('POST', '/api/order/cancelall', data);
+            return await this.localRequest('POST', '/flatten', data);
         }
         return await this.cloudRequest('POST', '/v1/orders/cancelall', data);
     }
@@ -205,14 +205,14 @@ class NinjaTraderAPI {
     
     async searchInstruments(query) {
         if (this.mode === 'local') {
-            return await this.localRequest('GET', `/api/instruments/search?q=${encodeURIComponent(query)}`);
+            return await this.localRequest('GET', `/instruments/search?q=${encodeURIComponent(query)}`);
         }
         return await this.cloudRequest('GET', `/v1/instruments/search?q=${encodeURIComponent(query)}`);
     }
 
     async getInstrument(symbol) {
         if (this.mode === 'local') {
-            return await this.localRequest('GET', `/api/instrument/${encodeURIComponent(symbol)}`);
+            return await this.localRequest('GET', `/instruments/${encodeURIComponent(symbol)}`);
         }
         return await this.cloudRequest('GET', `/v1/instruments/${encodeURIComponent(symbol)}`);
     }
@@ -221,21 +221,21 @@ class NinjaTraderAPI {
     
     async getQuote(symbol) {
         if (this.mode === 'local') {
-            return await this.localRequest('GET', `/api/quote/${encodeURIComponent(symbol)}`);
+            return await this.localRequest('GET', `/quote/${encodeURIComponent(symbol)}`);
         }
         return await this.cloudRequest('GET', `/v1/marketdata/${encodeURIComponent(symbol)}/quote`);
     }
 
     async getHistoricalBars(symbol, interval = '1', bars = 100) {
         if (this.mode === 'local') {
-            return await this.localRequest('GET', `/api/bars/${encodeURIComponent(symbol)}?interval=${interval}&bars=${bars}`);
+            return await this.localRequest('GET', `/bars/${encodeURIComponent(symbol)}?interval=${interval}&bars=${bars}`);
         }
         return await this.cloudRequest('GET', `/v1/marketdata/${encodeURIComponent(symbol)}/bars?interval=${interval}&bars=${bars}`);
     }
 
     async getMarketDepth(symbol) {
         if (this.mode === 'local') {
-            return await this.localRequest('GET', `/api/depth/${encodeURIComponent(symbol)}`);
+            return await this.localRequest('GET', `/depth/${encodeURIComponent(symbol)}`);
         }
         return await this.cloudRequest('GET', `/v1/marketdata/${encodeURIComponent(symbol)}/depth`);
     }
@@ -247,7 +247,7 @@ class NinjaTraderAPI {
             return { success: false, error: 'NinjaScript execution only available in local mode' };
         }
         
-        return await this.localRequest('POST', '/api/ninjascript/execute', {
+        return await this.localRequest('POST', '/ninjascript/execute', {
             strategy,
             parameters
         });
@@ -257,16 +257,16 @@ class NinjaTraderAPI {
         if (this.mode !== 'local') {
             return { success: false, error: 'Indicator values only available in local mode' };
         }
-        
-        return await this.localRequest('GET', `/api/indicator/${encodeURIComponent(symbol)}/${encodeURIComponent(indicatorName)}`);
+
+        return await this.localRequest('GET', `/indicator/${encodeURIComponent(symbol)}/${encodeURIComponent(indicatorName)}`);
     }
 
     async getChartState() {
         if (this.mode !== 'local') {
             return { success: false, error: 'Chart state only available in local mode' };
         }
-        
-        return await this.localRequest('GET', '/api/chart/state');
+
+        return await this.localRequest('GET', '/chart/state');
     }
 
     // ============ WEBSOCKET METHODS ============
@@ -340,20 +340,21 @@ class NinjaTraderAPI {
     
     async healthCheck() {
         if (this.mode === 'local') {
-            const result = await this.localRequest('GET', '/api/health');
+            const result = await this.localRequest('GET', '/health');
             if (result.success) {
                 const accounts = await this.getAccounts();
                 return {
                     success: true,
                     connected: true,
                     mode: 'local',
+                    serverInfo: result.data,
                     accounts: accounts.data || [],
                     accountCount: (accounts.data || []).length
                 };
             }
-            return { success: false, connected: false, mode: 'local' };
+            return { success: false, connected: false, mode: 'local', error: result.error };
         }
-        
+
         const auth = await this.authenticate();
         if (auth.success) {
             const accounts = await this.getAccounts();

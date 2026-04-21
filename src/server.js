@@ -184,7 +184,13 @@ async function handleToolCall(id, params) {
 }
 
 function sendResponse(id, result) {
-    console.log(JSON.stringify({ id, ...result }));
+    const msg = { jsonrpc: '2.0', id };
+    if (result.error) {
+        msg.error = result.error;
+    } else {
+        msg.result = result;
+    }
+    console.log(JSON.stringify(msg));
 }
 
 // ========== TOOL DEFINITIONS ==========

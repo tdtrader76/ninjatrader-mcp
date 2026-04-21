@@ -1,0 +1,12 @@
+NinjaScript File;Error;Code;Line;Column;
+McpBridgeAddOncs;'Globals' does not contain a definition for 'DefinedCurrency';CS0117;392;117;
+McpBridgeAddOncs;'Globals' does not contain a definition for 'DefinedCurrency';CS0117;393;121;
+McpBridgeAddOncs;'AccountItem' does not contain a definition for 'AccountSize';CS0117;394;95;
+McpBridgeAddOncs;'Globals' does not contain a definition for 'DefinedCurrency';CS0117;394;121;
+McpBridgeAddOncs;'Globals' does not contain a definition for 'DefinedCurrency';CS0117;395;135;
+McpBridgeAddOncs;'Globals' does not contain a definition for 'DefinedCurrency';CS0117;396;139;
+McpBridgeAddOncs;'AccountItem' does not contain a definition for 'Margin';CS0117;397;94;
+McpBridgeAddOncs;'Globals' does not contain a definition for 'DefinedCurrency';CS0117;397;115;
+McpBridgeAddOncs;'Globals' does not contain a definition for 'DefinedCurrency';CS0117;398;121;
+McpBridgeAddOncs;'Account' does not contain a definition for 'CancelOrder' and no accessible extension method 'CancelOrder' accepting a first argument of type 'Account' could be found (are you missing a using directive or an assembly reference?);CS1061;613;35;
+McpBridgeAddOncs;'Account' does not contain a definition for 'ChangeOrder' and no accessible extension method 'ChangeOrder' accepting a first argument of type 'Account' could be found (are you missing a using directive or an assembly reference?);CS1061;710;35;
